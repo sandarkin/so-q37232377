@@ -1,0 +1,77 @@
+import io.spring.gradle.dependencymanagement.DependencyManagementPlugin
+import org.springframework.boot.gradle.SpringBootPlugin
+import org.springframework.build.gradle.propdep.PropDepsPlugin
+import org.springframework.build.gradle.propdep.PropDepsIdeaPlugin
+
+group 'ru.sandarkin.so'
+version '1.0-SNAPSHOT'
+
+buildscript {
+  ext {
+    dependencyManagementPluginVersion = "0.5.5.RELEASE"
+    springBootPluginVersion = "1.3.2.RELEASE"
+    propdepsPluginVersion = "0.0.7"
+    gradleGitPropertiesPluginVersion = "1.4.11"
+    gitArtefactoryPluginVersion = "1.0.1.RELEASE"
+  }
+  repositories {
+    jcenter()
+    maven { url "https://plugins.gradle.org/m2/" }
+    maven { url "http://repo.spring.io/plugins-release/" }
+    maven { url "https://dl.bintray.com/applicationa/maven/" }
+    mavenCentral()
+    mavenLocal()
+  }
+  dependencies {
+    classpath "io.spring.gradle:dependency-management-plugin:${dependencyManagementPluginVersion}"
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootPluginVersion}"
+    classpath "org.springframework.build.gradle:propdeps-plugin:${propdepsPluginVersion}"
+  }
+}
+
+apply plugin: 'java'
+apply plugin: DependencyManagementPlugin
+apply plugin: SpringBootPlugin
+apply plugin: PropDepsPlugin
+apply plugin: PropDepsIdeaPlugin
+
+sourceCompatibility = 1.5
+
+ext {
+  springPlatformVersion = "2.0.3.RELEASE"
+  springCloudVersion = "Angel.SR6"
+  commonsBeanutilsVersion = "1.8.3"
+  netflixServoVersion = "0.7.5"
+  rxjavaSpringBootStarterVersion = "1.0.0"
+  jsoupVersion = "1.8.3"
+
+  allureVersion = "1.4.22"
+}
+
+configurations {
+  agent
+  compile.exclude module: "spring-boot-starter-tomcat"
+  compile.exclude group: "org.slf4j", module: "slf4j-log4j12"
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "io.spring.platform:platform-bom:${springPlatformVersion}"
+  }
+}
+
+
+dependencies {
+  compile("org.springframework.boot:spring-boot-starter-actuator")
+  compile("org.springframework.boot:spring-boot-starter-web")
+  compile("org.springframework.boot:spring-boot-starter-jetty")
+  compile("org.springframework.boot:spring-boot-starter-data-jpa")
+  compile("org.springframework.boot:spring-boot-starter-data-rest")
+  provided "org.projectlombok:lombok"
+  compile group: 'org.postgresql', name: 'postgresql', version: '9.4.1208'
+  testCompile group: 'junit', name: 'junit', version: '4.11'
+}
